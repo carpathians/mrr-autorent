@@ -173,7 +173,7 @@ export function useActions() {
       setLoading('workerLogs', true);
       try {
         const data = await api.getWorkerLogs(limit);
-        dispatch({ type: 'SET_WORKER_LOGS', payload: data });
+        dispatch({ type: 'SET_WORKER_LOGS', payload: Array.isArray(data) ? data : [] });
       } catch (e) { setError(e.message); }
       finally { setLoading('workerLogs', false); }
     }, [dispatch, setLoading, setError]),

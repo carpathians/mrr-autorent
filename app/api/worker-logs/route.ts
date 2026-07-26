@@ -9,7 +9,9 @@ export async function GET(req: NextRequest) {
   try {
     ensureDb();
     const limit = Math.min(Number(req.nextUrl.searchParams.get('limit')) || 100, 500);
-    return NextResponse.json(getWorkerLogs(limit));
+    const action = req.nextUrl.searchParams.get('action') || undefined;
+    const logs = getWorkerLogs(limit, action ? { action } : undefined);
+    return NextResponse.json(Array.isArray(logs) ? logs : []);
   } catch (err) {
     return NextResponse.json({ error: (err as Error).message }, { status: 500 });
   }

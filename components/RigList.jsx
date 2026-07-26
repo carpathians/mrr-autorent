@@ -245,7 +245,8 @@ export default function RigList() {
   const [orderdir, setOrderdir] = useState('asc');
   const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
-  const [affordableOnly, setAffordableOnly] = useState(true);
+  // Default off — affordable scans the market; discount lives on Good Deals / AutoRent only
+  const [affordableOnly, setAffordableOnly] = useState(false);
   const [minHash, setMinHash] = useState('');
   const [maxHash, setMaxHash] = useState('');
   const [hashUnit, setHashUnit] = useState('th');
@@ -321,7 +322,13 @@ export default function RigList() {
   return (
     <div>
       <div className="flex flex-wrap items-end justify-between gap-3 mb-4">
-        <h1 className="text-2xl font-bold">Browse Rigs</h1>
+        <div>
+          <h1 className="text-2xl font-bold">Browse Rigs</h1>
+          <p className="text-xs text-dark-300 mt-1">
+            Fast list (no market discount %). For % under market use{' '}
+            <a href="/deals" className="text-accent-blue hover:underline">Good Deals</a>.
+          </p>
+        </div>
         <div className="text-sm text-dark-200">
           Spendable:{' '}
           <span className="text-accent-yellow font-medium">

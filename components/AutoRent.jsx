@@ -53,11 +53,35 @@ export default function AutoRent() {
           Fix on MRR → Account → API: set Rent = <span className="font-semibold">Write</span>, then update keys in Settings.
         </div>
       )}
+      {ws.alive === false && (
+        <div className="mb-4 rounded-md border border-amber-800/60 bg-amber-950/40 px-4 py-3 text-sm text-amber-100">
+          Worker process not running (no heartbeat). Start with{' '}
+          <code className="text-accent-yellow">npm run worker</code> /{' '}
+          <code className="text-accent-yellow">dev:all</code>, or the Docker worker service.
+          See <a href="/logs" className="text-accent-blue hover:underline">Logs</a>.
+        </div>
+      )}
+      {Array.isArray(ws.recentErrors) && ws.recentErrors.length > 0 && (
+        <div className="mb-4 rounded-md border border-red-800/60 bg-red-950/40 px-4 py-3 text-sm text-red-100">
+          <div className="font-medium mb-1">Recent worker errors</div>
+          <ul className="space-y-1 text-xs">
+            {ws.recentErrors.slice(0, 3).map((e) => (
+              <li key={e.id} className="break-all text-red-200/90">
+                {e.details}
+              </li>
+            ))}
+          </ul>
+          <a href="/logs" className="inline-block mt-2 text-xs text-accent-blue hover:underline">
+            Open Logs →
+          </a>
+        </div>
+      )}
       <div className="flex flex-wrap items-end justify-between gap-3 mb-6">
         <div>
           <h1 className="text-2xl font-bold">Auto Rent</h1>
           <p className="text-sm text-dark-300 mt-1">
             Candidates every 60s · rent every 3 min
+            {ws.alive === true && <span className="text-accent-green"> · process alive</span>}
           </p>
         </div>
         <div className="flex gap-2">
@@ -85,7 +109,13 @@ export default function AutoRent() {
         <div className="bg-dark-700 rounded-lg p-5 border border-dark-500">
           <div className="text-xs text-dark-200 uppercase tracking-wide">Worker</div>
           <div className={`text-xl font-bold mt-1 ${enabled ? 'text-accent-green' : 'text-accent-red'}`}>
-            {enabled ? 'Running' : 'Stopped'}
+            {enabled ? 'Renting on' : 'Renting off'}
+          </div>
+          <div className="mt-1 text-xs">
+            Process:{' '}
+            <span className={ws.alive ? 'text-accent-green' : 'text-accent-red'}>
+              {ws.alive ? 'alive' : 'down'}
+            </span>
           </div>
           <div className="mt-3 space-y-1 text-xs text-dark-300">
             {ws.lastCheck && <div>Last rent check: {new Date(ws.lastCheck).toLocaleString()}</div>}
@@ -295,7 +325,7 @@ export default function AutoRent() {
           </div>
           <div className="flex justify-between">
             <span className="text-dark-200">Candidate Scan Cap</span>
-            <span className="text-white">{cfg.candidate_max_scan || '100'} / currency</span>
+            <span className="text-white">{cfg.candidate_max_scan || '800'} / currency</span>
           </div>
         </div>
         <a href="/settings" className="block mt-4 text-accent-blue text-xs hover:underline">
