@@ -1,0 +1,17 @@
+node_modules
+dist
+.next
+.env
+.git
+.cursor
+data
+server
+src
+*.db
+*.db-shm
+*.db-wal
+AGENTS.md
+.agentsignore
+.cursorignore
+README.md
+.github

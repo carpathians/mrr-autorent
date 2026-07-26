@@ -1,0 +1,42 @@
+# Local / standalone: Next web + worker sharing DATA_DIR
+services:
+  web:
+    build: .
+    image: ghcr.io/carpathians/mrr-autorent:latest
+    ports:
+      - "3001:3001"
+    environment:
+      DATA_DIR: /data
+      HOST: "0.0.0.0"
+      HOSTNAME: "0.0.0.0"
+      PORT: "3001"
+    volumes:
+      - mrr-data:/data
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:3001/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 25s
+
+  worker:
+    image: ghcr.io/carpathians/mrr-autorent:latest
+    depends_on:
+      web:
+        condition: service_healthy
+    command: ["node", "worker.mjs"]
+    environment:
+      DATA_DIR: /data
+    volumes:
+      - mrr-data:/data
+    restart: unless-stopped
+
+volumes:
+  mrr-data:
