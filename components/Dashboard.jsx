@@ -88,6 +88,36 @@ export default function Dashboard() {
         />
       </div>
 
+      {p.by_currency?.length > 0 && (
+        <div className="bg-dark-800 rounded-xl p-4 border border-dark-400/40 mb-6">
+          <h2 className="text-xs text-dark-300 uppercase tracking-wide font-semibold mb-3">By Currency</h2>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="text-dark-400 text-xs uppercase tracking-wider">
+                  <th className="text-left py-1 pr-3">Currency</th>
+                  <th className="text-right py-1 pr-3">Spent</th>
+                  <th className="text-right py-1 pr-3">Earned</th>
+                  <th className="text-right py-1">Net</th>
+                </tr>
+              </thead>
+              <tbody>
+                {p.by_currency.map((c) => (
+                  <tr key={c.currency} className="border-t border-dark-700">
+                    <td className="py-1.5 pr-3 font-medium text-dark-100">{c.currency}</td>
+                    <td className="py-1.5 pr-3 text-right text-accent-red">{c.spent.toFixed(8)}</td>
+                    <td className="py-1.5 pr-3 text-right text-accent-green">{c.earned.toFixed(8)}</td>
+                    <td className={`py-1.5 text-right font-medium ${c.net >= 0 ? 'text-accent-green' : 'text-accent-red'}`}>
+                      {c.net.toFixed(8)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div className="bg-dark-700 rounded-lg p-4 border border-dark-500">
           <h2 className="text-sm font-semibold text-dark-100 mb-3">Hours Summary</h2>
